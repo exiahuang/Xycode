@@ -1,7 +1,7 @@
 import https from 'https';
-import os from 'os';
 import fs from 'fs';
 import path from 'path';
+import { Util } from './Util';
 
 const SERVER_URL = "https://raw.githubusercontent.com/exiahuang/xycode-config/master/";
 const CONFIG_DESC_URL = `${SERVER_URL}/config.json`;
@@ -19,9 +19,7 @@ export class ConfigManager{
     private config_root_url: string;
 
     constructor(){
-      const date = new Date();
-      const timeStr = [date.getFullYear(), date.getMonth(), date.getDate(),date.getHours(), date.getMinutes(), date.getSeconds()].join("");
-      this.backupDir = path.join(os.homedir(), '.xycode', `backup_${timeStr}`);
+      this.backupDir = Util.backupdir;
       if(process.platform==='win32'){
         this.platform = "windows";
       } else if(process.platform==='darwin'){
@@ -65,7 +63,11 @@ export class ConfigManager{
 
     public async download(desc:ConfigDesc) : Promise<any>{
         const data = await this.getData(`${this.config_root_url}/${desc.name}`);
-        const saveFilePath = path.join(os.homedir(), '.xycode', desc.name);
+        const saveDir = Util.configdir;
+        if(!fs.existsSync(saveDir)){
+          fs.mkdirSync(saveDir);
+        }
+        const saveFilePath = path.join(saveDir, desc.name);
         this.backup(saveFilePath, path.join(this.backupDir, desc.name));
         fs.writeFileSync(saveFilePath, data);
     }

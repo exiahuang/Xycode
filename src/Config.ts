@@ -2,6 +2,7 @@ import os from 'os';
 import fs from 'fs';
 import path from 'path';
 import { XycodeUI } from './XycodeUI';
+import { Util } from './Util';
 
 export interface TaskType {
     label: string;
@@ -59,7 +60,7 @@ export class Config{
         if (!Config.defaultConfig) {
             Config.defaultConfig = Config._loadConfig(path.join(__dirname, './conf'));
         }
-        let customConfigData = Config._loadConfig(path.join(os.homedir(), '.xycode'));
+        let customConfigData = Config._loadConfig(Util.configdir);
         Config._data = Config._merge(Config.defaultConfig, customConfigData);
         return Config._data;
     }

@@ -4,20 +4,32 @@
 
 If you want to build a vscode extension, maybe you can use `xycode` first.
 
+[Document](https://exiahuang.github.io/xycode-doc/)
+
+[xycode-config](https://github.com/exiahuang/Xycode-config)
+
 ## Features
 
--   Less than 100k.
--   Define your vscode extension.
--   Rapid development tool for Salesforce SFDX Development.
--   Heroku development.
--   Git integrated.
--   Docker development.
--   Integrated Python, Go, Ruby, C, C++, Dotnet Core, Java ...etc .
--   Write blog, such as hexo, jekyll, mkdoc...etc.
--   Integrated with prettier, format source automatically.
--   Integrated Wenyan 文言文編程語言.
--   Integrated any commands as you like.
--   Shared configuration (tasks/settings) of VScode.
+- [x]  Less than 100k.
+- [x]  Shared configuration (tasks/settings) of VScode.
+- [x]  Integrated with system command and work with vscode.
+- [x]  Support c lang.
+- [x]  Support vbs.
+- [x]  Support dotnet core.
+- [x]  Support go language.
+- [x]  Support python.
+- [x]  Support ruby.
+- [x]  Support gradle language.
+- [x]  Support npm/nodejs/express/vue.
+- [x]  Support prettier, format source automatically.
+- [x]  Support Heroku development.
+- [x]  Support git command.
+- [x]  Support sfdx, it is a Rapid development tool for Salesforce SFDX Development.
+- [x]  Support Wenyan 文言文編程語言.
+- [x]  Support hexo/mkdoc blog.
+- [ ]  TODO : jekyll .
+- [ ]  TODO :  Docker development.
+- [ ]  TODO : a calculator.
 
 ## Download config
 

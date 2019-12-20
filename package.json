@@ -2,7 +2,7 @@
 	"name": "xycode",
 	"displayName": "xycode",
 	"description": "a lightweight and fast command executor for vscode.",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "ExiaHuang",
 	"engines": {
 		"vscode": "^1.40.0"
@@ -30,7 +30,9 @@
 		"Ruby",
 		"Go",
 		"CLang",
-		"Dotnet"
+		"Dotnet",
+		"Wenyan",
+		"文言"
 	],
 	"bugs": {
 		"url": "https://github.com/exiahuang/Xycode/issues"
@@ -44,42 +46,43 @@
 		"*"
 	],
 	"configuration": {
-        "type": "object",
-        "title": "xycode configuration",
-        "properties": {
-            "xycode.logLevel": {
-                "type": "string",
-                "default": "normal",
-                "description": "no use now",
-                "enum": [
-                    "verbose",
-                    "normal",
-                    "minimal"
-                ]
-            },
-            "xycode.maxBuffer": {
-                "type": "number",
-                "default": 20000000,
-                "description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
-            }
-        }
-    },
+		"type": "object",
+		"title": "xycode configuration",
+		"properties": {
+			"xycode.logLevel": {
+				"type": "string",
+				"default": "normal",
+				"description": "no use now",
+				"enum": [
+					"verbose",
+					"normal",
+					"minimal"
+				]
+			},
+			"xycode.maxBuffer": {
+				"type": "number",
+				"default": 20000000,
+				"description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
+			}
+		}
+	},
 	"main": "./out/extension.js",
 	"contributes": {
 		"keybindings": [
 			{
 				"command": "xycode.open",
 				"key": "ctrl+shift+i"
-			}],
+			}
+		],
 		"commands": [
-				{
-					"command" : "xycode.open",
-					"title" : "xycode: open command"
-				},
-				{
-					"command" : "xycode.config",
-					"title" : "xycode: download config"
-				}
+			{
+				"command": "xycode.open",
+				"title": "xycode: open command"
+			},
+			{
+				"command": "xycode.config",
+				"title": "xycode: download config"
+			}
 		]
 	},
 	"scripts": {

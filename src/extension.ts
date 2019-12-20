@@ -38,7 +38,6 @@ export function activate(context: vscode.ExtensionContext) {
 				async progress => {
 					  // Progress is shown while this function runs.
 					  // It can also return a promise which is then awaited
-					
 					await new CommandRunner(userConfiguration["maxBuffer"]).run(task, configVars, Util.file, Util.workspaceFolder);
 				}
 			);
