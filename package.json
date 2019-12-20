@@ -1,106 +1,106 @@
 {
-	"name": "xycode",
-	"displayName": "xycode",
-	"description": "a lightweight and fast command executor for vscode.",
-	"version": "0.0.2",
-	"publisher": "ExiaHuang",
-	"engines": {
-		"vscode": "^1.40.0"
-	},
-	"icon": "images/icon.png",
-	"categories": [
-		"Programming Languages",
-		"Other"
-	],
-	"keywords": [
-		"Task",
-		"Tools",
-		"Command",
-		"Executor",
-		"Git",
-		"Heroku",
-		"Docker",
-		"Hexo",
-		"Jekyll",
-		"mkdoc",
-		"Salesforce",
-		"Java",
-		"C#",
-		"Python",
-		"Ruby",
-		"Go",
-		"CLang",
-		"Dotnet",
-		"Wenyan",
-		"文言"
-	],
-	"bugs": {
-		"url": "https://github.com/exiahuang/Xycode/issues"
-	},
-	"homepage": "https://github.com/exiahuang/Xycode",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/exiahuang/Xycode.git"
-	},
-	"activationEvents": [
-		"*"
-	],
-	"configuration": {
-		"type": "object",
-		"title": "xycode configuration",
-		"properties": {
-			"xycode.logLevel": {
-				"type": "string",
-				"default": "normal",
-				"description": "no use now",
-				"enum": [
-					"verbose",
-					"normal",
-					"minimal"
-				]
-			},
-			"xycode.maxBuffer": {
-				"type": "number",
-				"default": 20000000,
-				"description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
-			}
-		}
-	},
-	"main": "./out/extension.js",
-	"contributes": {
-		"keybindings": [
-			{
-				"command": "xycode.open",
-				"key": "ctrl+shift+i"
-			}
-		],
-		"commands": [
-			{
-				"command": "xycode.open",
-				"title": "xycode: open command"
-			},
-			{
-				"command": "xycode.config",
-				"title": "xycode: download config"
-			}
-		]
-	},
-	"scripts": {
-		"vscode:prepublish": "npm run compile",
-		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./",
-		"pretest": "npm run compile",
-		"test": "node ./out/test/runTest.js"
-	},
-	"devDependencies": {
-		"@types/glob": "^7.1.1",
-		"@types/mocha": "^5.2.7",
-		"@types/node": "^12.11.7",
-		"@types/vscode": "^1.40.0",
-		"glob": "^7.1.5",
-		"mocha": "^6.2.2",
-		"typescript": "^3.6.4",
-		"tslint": "^5.20.0",
-		"vscode-test": "^1.2.2"
-	}
+  "name": "xycode",
+  "displayName": "xycode",
+  "description": "a lightweight and fast command executor for vscode.",
+  "version": "0.0.3",
+  "publisher": "ExiaHuang",
+  "engines": {
+    "vscode": "^1.40.0"
+  },
+  "icon": "images/icon.png",
+  "categories": [
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "Task",
+    "Tools",
+    "Command",
+    "Executor",
+    "Git",
+    "Heroku",
+    "Docker",
+    "Hexo",
+    "Jekyll",
+    "mkdoc",
+    "Salesforce",
+    "Java",
+    "C#",
+    "Python",
+    "Ruby",
+    "Go",
+    "CLang",
+    "Dotnet",
+    "Wenyan",
+    "文言"
+  ],
+  "bugs": {
+    "url": "https://github.com/exiahuang/Xycode/issues"
+  },
+  "homepage": "https://github.com/exiahuang/Xycode",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/exiahuang/Xycode.git"
+  },
+  "activationEvents": [
+    "*"
+  ],
+  "configuration": {
+    "type": "object",
+    "title": "xycode configuration",
+    "properties": {
+      "xycode.logLevel": {
+        "type": "string",
+        "default": "normal",
+        "description": "no use now",
+        "enum": [
+          "verbose",
+          "normal",
+          "minimal"
+        ]
+      },
+      "xycode.maxBuffer": {
+        "type": "number",
+        "default": 20000000,
+        "description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
+      }
+    }
+  },
+  "main": "./out/extension.js",
+  "contributes": {
+    "keybindings": [
+      {
+        "command": "xycode.open",
+        "key": "ctrl+shift+i"
+      }
+    ],
+    "commands": [
+      {
+        "command": "xycode.open",
+        "title": "xycode: open command"
+      },
+      {
+        "command": "xycode.config",
+        "title": "xycode: download config"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.40.0",
+    "glob": "^7.1.5",
+    "mocha": "^6.2.2",
+    "typescript": "^3.6.4",
+    "tslint": "^5.20.0",
+    "vscode-test": "^1.2.2"
+  }
 }
