@@ -28,7 +28,7 @@ export function activate(context: vscode.ExtensionContext) {
 		const task = await vscode.window.showQuickPick(config.tasks.filter(task => !task.inActive));
 		if (!task) { return false; }
 		if(task.notShowProcess){
-			new CommandRunner(userConfiguration["maxBuffer"]).run(task, configVars);
+			new CommandRunner(userConfiguration["maxBuffer"]).run(task, configVars, Util.file, Util.workspaceFolder);
 		} else {
 			vscode.window.withProgress(
 				{
