@@ -115,7 +115,7 @@ class CommandRunner {
 	public async run(task: TaskType, configVars: { [x: string]: any; }, file?: string, workspaceFolder?: string) {
 		const xycodeui = XycodeUI.instance;
 		this.file = file || "";
-		this.workspaceFolder = workspaceFolder || Util.homedir();
+		this.workspaceFolder = workspaceFolder || Util.homedir;
 		try {
 			const filetype = path.extname(this.file);
 			if(!(!task.filetypes || task.filetypes && filetype && task.filetypes.includes(filetype))){
@@ -267,14 +267,19 @@ class CommandBuilder{
         const YYYYMMDD = [date.getFullYear(), date.getMonth(), date.getDate()].join("");
         const HHmm = [date.getHours(), date.getMinutes()].join("");
         return {
-            "HOME" : Util.homedir(),
+            "HOME" : Util.homedir,
+            "TMPDIR" : Util.tmpdir,
+            "XYCODE_PATH" : Util.moduledir,
             "file" : file,
             "fileBasename": path.basename(file),
-            "fileBasenameNoExtension":  path.basename(file, path.extname(file)),
+			"fileBasenameNoExtension":  path.basename(file, path.extname(file)),
+			"relativeFile" : path.relative(workspaceFolder, file),
+			"relativeFileDirname" : path.relative(workspaceFolder, path.dirname(file)),
             "workspaceFolder" : workspaceFolder,
             "workspaceFolderBasename" : path.basename(workspaceFolder),
             "fileDirname" : path.dirname(file),
-            "fileExtname" : path.extname(file),
+			"fileExtname" : path.extname(file),
+			"selectedText" : Util.selectedText,
             "YYYYMMDD": YYYYMMDD,
             "YYYYMMDD_HHmm": [YYYYMMDD, "_", HHmm].join("")
         };

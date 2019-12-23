@@ -28,6 +28,22 @@ export class OpenFile implements ITrigger{
 	}
 }
 
+export class CopyFile implements ITrigger{
+	public run(srcFile:string, destFile:string, isOverWrite:boolean=false) {
+		if(isOverWrite || !fs.existsSync(destFile)){
+			fs.copyFileSync(srcFile, destFile);
+		}
+	}
+}
+
+export class RemoveFile implements ITrigger{
+	public run(filepath:string) {
+		if (fs.existsSync(filepath)) {
+			fs.unlinkSync(filepath);
+		}
+	}
+}
+
 export class CheckFileExist implements ITrigger{
 	public run(filepath:string) {
 		const _filepath = Util.getFilePath(filepath);

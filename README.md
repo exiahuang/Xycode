@@ -10,26 +10,26 @@ If you want to build a vscode extension, maybe you can use `xycode` first.
 
 ## Features
 
-- [x]  Less than 100k.
-- [x]  Shared configuration (tasks/settings) of VScode.
-- [x]  Integrated with system command and work with vscode.
-- [x]  Support c lang.
-- [x]  Support vbs.
-- [x]  Support dotnet core.
-- [x]  Support go language.
-- [x]  Support python.
-- [x]  Support ruby.
-- [x]  Support gradle language.
-- [x]  Support npm/nodejs/express/vue.
-- [x]  Support prettier, format source automatically.
-- [x]  Support Heroku development.
-- [x]  Support git command.
-- [x]  Support sfdx, it is a Rapid development tool for Salesforce SFDX Development.
-- [x]  Support Wenyan 文言文編程語言.
-- [x]  Support hexo/mkdoc blog.
-- [ ]  TODO : jekyll .
-- [ ]  TODO :  Docker development.
-- [ ]  TODO : a calculator.
+-   [x] Less than 100k.
+-   [x] Shared configuration (tasks/settings) of VScode.
+-   [x] Integrated with system command and work with vscode.
+-   [x] Support c lang.
+-   [x] Support vbs.
+-   [x] Support dotnet core.
+-   [x] Support go language.
+-   [x] Support python.
+-   [x] Support ruby.
+-   [x] Support gradle.
+-   [x] Support npm/nodejs/express/vue.
+-   [x] Support prettier, format source automatically.
+-   [x] Support Heroku development.
+-   [x] Support git command.
+-   [x] Support sfdx, it is a Rapid development tool for Salesforce SFDX Development. Metadata diff with server, retrieve standard sobject...
+-   [x] Support Wenyan 文言文編程語言.
+-   [x] Support hexo/mkdoc blog.
+-   [ ] TODO : jekyll .
+-   [ ] TODO : Docker development.
+-   [ ] TODO : a calculator.
 
 ## Download config
 
@@ -109,6 +109,8 @@ Linux/Mac user: `~/.xycode`
 
 -   \${HOME} - Home directory
 -   \${file} - the current opened file
+-   \${relativeFile} - the current opened file relative to workspaceFolder
+-   \${relativeFileDirname} - the current opened file's dirname relative to workspaceFolder
 -   \${fileBasename} - the current opened file's basename
 -   \${fileBasenameNoExtension} - the current opened file's basename with no file extension
 -   \${workspaceFolder} - the path of the folder opened
@@ -117,12 +119,15 @@ Linux/Mac user: `~/.xycode`
 -   \${fileExtname} - the current opened file's extension
 -   \${YYYYMMDD} - current date
 -   \${YYYYMMDD_HHmm} - current datetime
+-   \${TMPDIR} - Temp directory
+-   \${XYCODE_PATH} - XYCODE Extension path
 
 ### Predefined trigger
 
 -   Mkdirs - make directory
 -   SwitchFolder - switch project folder
 -   OpenFile - open file
+-   CopyFile - copy file
 -   CheckFileExist - check file exist
 -   Diff - diff file
 
@@ -370,7 +375,7 @@ shortkey: `ctrl+shift+i`
 
 ## Requirements
 
-None.
+Require commands which you set in your config file in `~/.xycode/*.json`
 
 ## Extension Settings
 

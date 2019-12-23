@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import path from 'path';
-import fs from 'fs';
 import os from 'os';
 
 export class Util {
@@ -18,7 +17,7 @@ export class Util {
 	static replaceAll(target: string, search: string, replacement: string): string {
 		return target.replace(new RegExp(search, 'g'), replacement);
     }
-    static homedir(): string {
+    static get homedir(): string {
         return os.homedir();
     }
     static get file(): string {
@@ -26,6 +25,15 @@ export class Util {
     }
     static get workspaceFolder(): string {
         return vscode.workspace && vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0 ? vscode.workspace.workspaceFolders[0].uri.fsPath : "";
+    }
+    static get selectedText(): string {
+		var editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return "";
+		}
+		var selection = editor.selection;
+		var text = editor.document.getText(selection);
+        return text;
     }
     static get configdir(): string {
 		return path.join(os.homedir(), '.xycode');
@@ -36,4 +44,11 @@ export class Util {
 		const backupdir = path.join(Util.configdir, `backup_${timeStr}`);
 		return backupdir;
     }
+    static get tmpdir(): string {
+		return os.tmpdir();
+	}
+    static get moduledir(): string {
+		// return vscode.extensions.getExtension("exiahuang.Xycode")?.extensionPath || "";
+		return __dirname;
+	}
 }
