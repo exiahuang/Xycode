@@ -286,7 +286,7 @@ class CommandBuilder{
         const date = new Date();
         const YYYYMMDD = [date.getFullYear(), date.getMonth(), date.getDate()].join("");
         const HHmm = [date.getHours(), date.getMinutes()].join("");
-        return {
+        let fileAttr = {
             "HOME" : Util.homedir,
             "TMPDIR" : Util.tmpdir,
             "XYCODE_PATH" : Util.moduledir,
@@ -302,7 +302,18 @@ class CommandBuilder{
 			"selectedText" : Util.selectedText,
             "YYYYMMDD": YYYYMMDD,
             "YYYYMMDD_HHmm": [YYYYMMDD, "_", HHmm].join("")
-        };
+		};
+		if(Util.isWindows){
+			const wslFileAttr = {
+				"wslHOME" : Util.getWSLPath(Util.homedir),
+				"wslTMPDIR" : Util.getWSLPath(Util.tmpdir),
+				"wslFile" : Util.getWSLPath(file),
+				"wslFileDirname": Util.getWSLPath(path.dirname(file)),
+				"wslWorkspaceFolder" : Util.getWSLPath(workspaceFolder)
+			};
+			fileAttr = { ...fileAttr, ...wslFileAttr };
+		}
+		return fileAttr;
     }
 }
 

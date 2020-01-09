@@ -8,6 +8,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 -   `xycode.openconfig` command: open config directory.
 -   encoding config option.
+-   add WSL path.
 
 ## [0.0.5]
 

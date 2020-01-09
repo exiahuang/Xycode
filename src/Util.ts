@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import path from 'path';
+import path, { sep } from 'path';
 import os from 'os';
 import { ExtConst } from './ExtConst';
 
@@ -11,6 +11,16 @@ export class Util {
 		else {
 			return path.resolve(path.join(Util.workspaceFolder, filepath));
 		}
+	}
+	static getWSLPath(filepath: string): string {
+		let _filepath = Util.getFilePath(filepath);
+		let sepa: string[] = _filepath.split(path.win32.sep);
+		if(sepa.length === 0) {
+			return filepath;
+		}
+		let _subPath = [sepa[0].toLowerCase()].concat(sepa.slice(1));
+		let wslPath = "/mnt/" + path.posix.join.apply(path.posix, _subPath).replace(":", "");
+		return wslPath;
 	}
 	static getUri(filepath: string): vscode.Uri {
 		return vscode.Uri.file(Util.getFilePath(filepath));
@@ -53,6 +63,9 @@ export class Util {
 	}
     static get lang(): string {
 		return vscode.env.language;
+	}
+    static get isWindows(): boolean {
+		return process.platform === 'win32';
 	}
     private static get _encoding(): string {
 		if(process.platform === 'win32'){
