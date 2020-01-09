@@ -1,9 +1,10 @@
 import * as vscode from 'vscode';
 import { window } from 'vscode';
+import { ExtConst } from './ExtConst';
 
 export class XycodeUI {
     private static _instance:XycodeUI;
-    private xycodeChannel = window.createOutputChannel("xycode");
+    private xycodeChannel = window.createOutputChannel(ExtConst.extName);
 
     private constructor() {
     }
@@ -16,13 +17,15 @@ export class XycodeUI {
     }
 
 	private init() {
-        this._init_statusbar();
+        if(ExtConst.showStatusbar){
+            this._init_statusbar();
+        }
 	}
 	private _init_statusbar() {
 		let xycodeButton = window.createStatusBarItem(vscode.StatusBarAlignment.Left, 4.5);
-		xycodeButton.command = 'xycode.open';
-		xycodeButton.text = `$(tools) xycode`;
-		xycodeButton.tooltip = "open xycode";
+		xycodeButton.command = `${ExtConst.extName}.open`;
+		xycodeButton.text = `${ExtConst.statusbarIcon} ${ExtConst.extName}`;
+		xycodeButton.tooltip = `open ${ExtConst.extName}`;
 		xycodeButton.show();
     }
 

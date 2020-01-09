@@ -1,14 +1,15 @@
-import os from 'os';
 import fs from 'fs';
 import path from 'path';
 import { XycodeUI } from './XycodeUI';
 import { Util } from './Util';
+import { ExtConst } from './ExtConst';
 
 export interface TaskType {
     label: string;
     description: string;
     command: string;
     filetypes?: Array<string>;
+    encoding?: string;
     cwd?: string;
     inActive?: boolean;
     termial?: { name?: string, shellPath?: string, shellArgs?: string[] | string };
@@ -60,8 +61,12 @@ export class Config{
         if (!Config.defaultConfig) {
             Config.defaultConfig = Config._loadConfig(path.join(__dirname, './conf'));
         }
+        if(ExtConst.isLoadHomeConfig){
         let customConfigData = Config._loadConfig(Util.configdir);
         Config._data = Config._merge(Config.defaultConfig, customConfigData);
         return Config._data;
+        } else{
+            return Config.defaultConfig;
+        }
     }
 }

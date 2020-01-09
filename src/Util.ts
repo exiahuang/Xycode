@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import path from 'path';
 import os from 'os';
+import { ExtConst } from './ExtConst';
 
 export class Util {
 	static getFilePath(filepath: string): string {
@@ -36,7 +37,7 @@ export class Util {
         return text;
     }
     static get configdir(): string {
-		return path.join(os.homedir(), '.xycode');
+		return path.join(os.homedir(), `.${ExtConst.extName}`);
     }
     static get backupdir(): string {
 		const date = new Date();
@@ -48,7 +49,40 @@ export class Util {
 		return os.tmpdir();
 	}
     static get moduledir(): string {
-		// return vscode.extensions.getExtension("exiahuang.Xycode")?.extensionPath || "";
 		return __dirname;
+	}
+    static get lang(): string {
+		return vscode.env.language;
+	}
+    private static get _encoding(): string {
+		if(process.platform === 'win32'){
+			const lang = Util.lang;
+			if(lang === "ja"){
+				return "CP932";
+			} else if(lang === "zh-CN" || lang === "zh-TW"){
+				return "CP936";
+			}
+		}
+		return "UTF-8";
+	}
+    static get encoding(): string {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration["encoding"] || ExtConst.encoding || Util._encoding;
+	}
+    static get maxBuffer(): number {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration["maxBuffer"] || ExtConst.maxBuffer;
+	}
+    static getUserConfig(configVars: {  [x: string]: any;} ): {  [x: string]: any;} {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		ExtConst.userConfigKeyList.forEach(key =>{
+			if(userConfiguration[key]){
+				configVars[key] = {
+					"label": key,
+					"value": userConfiguration[key]
+				};
+			}
+		});
+		return configVars;
 	}
 }

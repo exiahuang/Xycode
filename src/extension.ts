@@ -6,8 +6,8 @@ import { getTriggerHandler } from './TriggerHandler';
 import { Util } from './Util.js';
 import { TaskType, Config } from './Config';
 import { ConfigManager, ConfigDesc } from './ConfigManager';
-
-const HELP_MESSAGE = `Thank you for using xycode. https://github.com/exiahuang/Xycode`;
+import { ExtConst } from './ExtConst';
+import iconv from 'iconv-lite';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,45 +17,52 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	// The command has been defined in the package.json file
 
-	context.subscriptions.push(vscode.commands.registerCommand("xycode.open", async () => {
+	context.subscriptions.push(vscode.commands.registerCommand(`${ExtConst.extName}.open`, async () => {
 		const config = Config.data;
 		if(config.tasks.length === 0){
-			vscode.commands.executeCommand("xycode.config");
+			vscode.commands.executeCommand(`${ExtConst.extName}.config`);
 			return;
 		}
-		const userConfiguration = vscode.workspace.getConfiguration('xycode');
-		const configVars = config.variables;
 		const task = await vscode.window.showQuickPick(config.tasks.filter(task => !task.inActive));
 		if (!task) { return false; }
+		const configVars = Util.getUserConfig(config.variables);
 		if(task.notShowProcess){
-			new CommandRunner(userConfiguration["maxBuffer"]).run(task, configVars, Util.file, Util.workspaceFolder);
+			new CommandRunner(Util.maxBuffer, task.encoding || Util.encoding).run(task, configVars, Util.file, Util.workspaceFolder);
 		} else {
 			vscode.window.withProgress(
 				{
 					location: vscode.ProgressLocation.Window,
-					title: `Xycode running ${task.label}`
+					title: `${ExtConst.extName} running ${task.label}`
 				},
 				async progress => {
 					  // Progress is shown while this function runs.
 					  // It can also return a promise which is then awaited
-					await new CommandRunner(userConfiguration["maxBuffer"]).run(task, configVars, Util.file, Util.workspaceFolder);
+					await new CommandRunner(Util.maxBuffer, task.encoding || Util.encoding).run(task, configVars, Util.file, Util.workspaceFolder);
 				}
 			);
 		}
 	}));
 
-	
-	context.subscriptions.push(vscode.commands.registerCommand("xycode.config", async () => {
+	if(ExtConst.isRegistOpenConfigCommand){
+		context.subscriptions.push(vscode.commands.registerCommand(`${ExtConst.extName}.openconfig`, () => {
+			vscode.commands.executeCommand('vscode.openFolder', 
+				Util.getUri(Util.configdir), true
+			);
+		}));
+	}
+
+	if(ExtConst.isRegistConfigCommand){
+		context.subscriptions.push(vscode.commands.registerCommand(`${ExtConst.extName}.config`, async () => {
 		try {
 			const cm = new ConfigManager();
 			const configList = await cm.getConfigList();
 			if(configList === undefined){
-				xycodeui.showErrorMessage(`Xycode get config error`);
+					xycodeui.showErrorMessage(`${ExtConst.extName} get config error`);
 				return;
 			}
 			const selectList: Array<ConfigDesc> | undefined = await vscode.window.showQuickPick(configList, {
 				canPickMany: true,
-				placeHolder: "Please Download Config For Xycode"
+					placeHolder: "Please Download Config For ${ExtConst.extName}"
 			});
 			if(selectList){
 				selectList.forEach(async (desc) => {
@@ -63,29 +70,33 @@ export function activate(context: vscode.ExtensionContext) {
 						await cm.download(desc);
 						xycodeui.channelShow(`${desc.name} download ok!`);
 					} catch (error) {
-						xycodeui.showErrorMessage(`Xycode download config exception ${error}`);
+							xycodeui.showErrorMessage(`${ExtConst.extName} download config exception ${error}`);
 					}
 				});
-				xycodeui.showInformationMessage(`Xycode Config Download done! Enjoy yourself!`);
+					xycodeui.showInformationMessage(`${ExtConst.extName} Config Download done! Enjoy yourself!`);
 			}
 		} catch (error) {
-			xycodeui.showErrorMessage(`Xycode ${error}`);
+				xycodeui.showErrorMessage(`${ExtConst.extName} ${error}`);
 		}
 	}));
+	}
 
 	vscode.workspace.onDidSaveTextDocument(async (doc) =>{
-		const userConfiguration = vscode.workspace.getConfiguration('xycode');
 		const config = Config.data;
 		const fileType = path.extname(doc.fileName);
 		const tasks = config.onSaveEvents?.filter(task =>{
 			return !task.inActive && (!task.filetypes || fileType && task.filetypes.includes(fileType));
 		});
+		const maxBuffer = Util.maxBuffer;
+		const encoding =  Util.encoding;
 		await tasks?.forEach(async (task) => {
-			await new CommandRunner(userConfiguration["maxBuffer"]).run(task, config.variables, doc.fileName, Util.workspaceFolder);
+			await new CommandRunner(maxBuffer, task.encoding || encoding).run(task, Util.getUserConfig(config.variables), doc.fileName, Util.workspaceFolder);
 		});
 	});
 
-	xycodeui.channelShow(HELP_MESSAGE);
+	if(ExtConst.isShowMessage){
+		xycodeui.channelShow(ExtConst.message);
+	}
 }
 
 // this method is called when your extension is deactivated
@@ -97,14 +108,21 @@ class CommandRunner {
 	private file: string = "";
 	private workspaceFolder: string = "";
 
-	constructor(public readonly maxBuffer: number=1024 * 1024 * 20){
+	constructor(public readonly maxBuffer: number, public readonly encoding: string){
 	}
 
-	public async exec(command: string, options: child_process.ExecOptions): Promise<{ stdout: string; stderr: string }> {
+	public async exec(command: string, options: child_process.ExecOptionsWithStringEncoding) : Promise<{ stdout: string; stderr: string }> {
 		return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
 			child_process.exec(command, options, (error, stdout, stderr) => {
+				if(stdout){
+					stdout = iconv.decode(Buffer.from(stdout, 'binary'), this.encoding);
+				}
+				if(stderr){
+					stderr = iconv.decode(Buffer.from(stderr, 'binary'), this.encoding);
+				}
 				if (error) {
-					let errorMsg = [error.toString(), stdout.toString(), stderr.toString()].join("\r\n");
+					let _errorExceptionMsg = iconv.decode(Buffer.from(error.toString(), 'binary'), this.encoding);
+					let errorMsg = [_errorExceptionMsg, stdout, stderr].join("\r\n");
 					reject(errorMsg);
 				}
 				resolve({ stdout, stderr });
@@ -143,7 +161,7 @@ class CommandRunner {
 			if(task.termial){
 				xycodeui.getTerminal(this.commandBuilder.format(task.termial.name), task.termial.shellPath, task.termial.shellArgs).sendText(command);
 			} else{
-				let { stdout, stderr } = await this.exec(command, { cwd: cwd, maxBuffer: this.maxBuffer });
+				let { stdout, stderr } = await this.exec(command, { cwd: cwd, maxBuffer: this.maxBuffer, encoding: 'binary' });
 
 				if (stderr && stderr.length > 0) {
 					xycodeui.showErrorMessage(stderr);
@@ -160,12 +178,13 @@ class CommandRunner {
 			xycodeui.channelShow("", false);
 		}
 		catch(e) {
-			xycodeui.showErrorMessage(`Xycode ${e}`);
+			xycodeui.showErrorMessage(`${ExtConst.extName} ${e}`);
 			xycodeui.channelShow(e);
 		}
 	}
 
 	private async invokeTrigger(triggers: Array<{type: string, fn: string, params: []}>, cwd : string) {
+		const xycodeui = XycodeUI.instance;
 		for(let trigger of triggers) {
 			let _params = trigger["params"].map(param =>{
 				if(typeof param === "string"){
@@ -175,7 +194,8 @@ class CommandRunner {
 			} );
 			if(!trigger.hasOwnProperty("type") || trigger["type"] === "buildin"){
 				getTriggerHandler(trigger["fn"]).run(..._params);
-			} else if(trigger["type"] === "shell"){
+			} else if(trigger["type"] === "js"){
+				eval(trigger["fn"]);
 				// let { stdout, stderr } = await this.exec(trigger["fn"], { cwd: cwd, maxBuffer: this.maxBuffer });
 				// await this.exec(trigger["fn"]);
 				// todo

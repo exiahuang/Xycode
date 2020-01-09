@@ -10,7 +10,6 @@ If you want to build a vscode extension, maybe you can use `xycode` first.
 
 ## Features
 
--   [x] Less than 100k.
 -   [x] Shared configuration (tasks/settings) of VScode.
 -   [x] Integrated with system command and work with vscode.
 -   [x] Support c lang.
