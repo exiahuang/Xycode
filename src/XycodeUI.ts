@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
 import { window } from 'vscode';
 import { ExtConst } from './ExtConst';
+import { Util } from './Util';
 
 export class XycodeUI {
     private static _instance:XycodeUI;
@@ -57,6 +58,16 @@ export class XycodeUI {
             this.xycodeChannel.append("[" + new Date().toLocaleString() + "] ");
         }
         this.xycodeChannel.appendLine(msg.toString());
+    }
+
+    public debug(msg: any, isJson?: boolean) {
+        if(msg && Util.isDebug){
+            if(isJson){
+                this.channelShow("[debug] " + JSON.stringify(msg, null, 2));
+            } else{
+                this.channelShow("[debug] " + msg);
+            }
+        }
     }
 
     public openChannel() {
@@ -128,7 +139,7 @@ export class XycodeUI {
             openLabel: label
        };
        const fileUri = await window.showOpenDialog(options);
-       return fileUri && fileUri[0] ? fileUri[0].fsPath : null;
+       return fileUri && fileUri[0] ? fileUri[0].fsPath : undefined;
     }
     
     public async openFileDialog(configVar: any) {
@@ -142,12 +153,11 @@ export class XycodeUI {
             filters: filters
        };
        const fileUri = await window.showOpenDialog(options);
-       return fileUri && fileUri[0] ? fileUri[0].fsPath : null;
+       return fileUri && fileUri[0] ? fileUri[0].fsPath : undefined;
     }
 
     public async openFilesDialog(configVar: any) {
         let label = configVar && configVar.hasOwnProperty("label") ? configVar["label"].toString() : "select files";
-        let separator = configVar && configVar.hasOwnProperty("separator") ? configVar["separator"] : " ";
         let filters = configVar && configVar.hasOwnProperty("filters") ? configVar["filters"] : { 'All files': ['*'] };
         const options: vscode.OpenDialogOptions = {
             canSelectMany: true,
@@ -157,7 +167,7 @@ export class XycodeUI {
             filters: filters
        };
        const fileUri = await window.showOpenDialog(options);
-       return fileUri ? fileUri.map(uri => "\"" + uri.fsPath + "\"").join(separator) : undefined;
+       return fileUri ? fileUri.map(uri => uri.fsPath) : [];
     }
 
     public switchFolder(folder: string) {

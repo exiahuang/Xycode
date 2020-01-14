@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import path, { sep } from 'path';
+import path from 'path';
 import os from 'os';
 import { ExtConst } from './ExtConst';
 
@@ -13,6 +13,7 @@ export class Util {
 		}
 	}
 	static getWSLPath(filepath: string): string {
+		if(!filepath){ return ""; }
 		let _filepath = Util.getFilePath(filepath);
 		let sepa: string[] = _filepath.split(path.win32.sep);
 		if(sepa.length === 0) {
@@ -67,6 +68,13 @@ export class Util {
     static get isWindows(): boolean {
 		return process.platform === 'win32';
 	}
+    static isSupportPlatform(platforms:Array<string> | undefined ): boolean {
+		if(platforms === undefined){ return true;}
+		if(platforms.includes(process.platform)){ return true; }
+		if(platforms.includes("wsl") && Util.isWslMode){ return true; }
+		if(platforms.includes("bash") && Util.isBashMode){ return true; }
+		return false;
+	}
     private static get _encoding(): string {
 		if(process.platform === 'win32'){
 			const lang = Util.lang;
@@ -85,6 +93,27 @@ export class Util {
     static get maxBuffer(): number {
 		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
 		return userConfiguration["maxBuffer"] || ExtConst.maxBuffer;
+	}
+    static get isDebug(): boolean {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration["isDebug"] || false;
+	}
+    static get shellPath(): string | undefined {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		const shellPath = userConfiguration["shellPath"] ? userConfiguration["shellPath"] : undefined;
+		return Util.isWslMode ? shellPath || "C:\\Windows\\System32\\bash.exe" : shellPath ;
+	}
+    static get optionFeatures(): Array<string> {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration.get("optionFeatures") || [];
+	}
+    static get isBashMode(): boolean {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration["shellMode"] === "bash";
+	}
+    static get isWslMode(): boolean {
+		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);
+		return userConfiguration["shellMode"] === "wsl" && Util.isWindows;
 	}
     static getUserConfig(configVars: {  [x: string]: any;} ): {  [x: string]: any;} {
 		const userConfiguration = vscode.workspace.getConfiguration(`${ExtConst.extName}`);

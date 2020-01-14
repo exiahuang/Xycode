@@ -13,6 +13,7 @@
         "Other"
     ],
     "keywords": [
+        "WSL",
         "Task",
         "Tools",
         "Command",
@@ -45,17 +46,6 @@
     "activationEvents": [
         "*"
     ],
-    "configuration": {
-        "type": "object",
-        "title": "xycode configuration",
-        "properties": {
-            "xycode.maxBuffer": {
-                "type": "number",
-                "default": 20000000,
-                "description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
-            }
-        }
-    },
     "main": "./out/extension.js",
     "contributes": {
         "keybindings": [
@@ -77,7 +67,43 @@
                 "command": "xycode.openconfig",
                 "title": "xycode: open config directory"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "xycode configuration",
+            "properties": {
+                "xycode.maxBuffer": {
+                    "type": "number",
+                    "default": 20000000,
+                    "description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
+                },
+                "xycode.shellMode": {
+                    "type": "string",
+                    "default": "default",
+                    "description": "Default blank, use system shell.",
+                    "enum": [
+                        "default",
+                        "wsl",
+                        "bash"
+                    ]
+                },
+                "xycode.shellPath": {
+                    "type": "string",
+                    "default": "",
+                    "description": "shellPath. default blank. if you use wsl mode, please set it 'C:\\Windows\\System32\\bash.exe'"
+                },
+                "xycode.isDebug": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "show debug command."
+                },
+                "xycode.optionFeatures": {
+                    "type": "array",
+                    "default": [],
+                    "description": "Option Features."
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

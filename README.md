@@ -4,12 +4,27 @@
 
 If you want to build a vscode extension, maybe you can use `xycode` first.
 
-[Document](https://exiahuang.github.io/xycode-doc/)
+## Reference
 
-[xycode-config](https://github.com/exiahuang/Xycode-config)
+Project Details
+
+-   [vscode market xycode](https://marketplace.visualstudio.com/items?itemName=ExiaHuang.xycode)
+-   [exiahuang/Xycode](https://github.com/exiahuang/Xycode)
+-   [xycode-config](https://github.com/exiahuang/Xycode-config)
+
+Document Usage:
+
+-   [xycode English](https://exiahuang.github.io/xycode-doc/)
+-   [xycode 日本語](http://salesforcexytools.com/xycode-doc/index.ja/)
+-   [xycode 中文](http://salesforcexytools.com/xycode-doc/index.zh-CN/)
+-   [Salesforce CLI in xycode](http://salesforcexytools.com/xycode-doc/usage/sfdx/)
+-   [C Program in xycode](http://salesforcexytools.com/xycode-doc/usage/c-program/)
+-   [Nodejs in xycode](http://salesforcexytools.com/xycode-doc/usage/nodejs/)
+-   [python in xycode](http://salesforcexytools.com/xycode-doc/usage/python/)
 
 ## Features
 
+-   [x] Less than 100k.
 -   [x] Shared configuration (tasks/settings) of VScode.
 -   [x] Integrated with system command and work with vscode.
 -   [x] Support c lang.
@@ -26,6 +41,7 @@ If you want to build a vscode extension, maybe you can use `xycode` first.
 -   [x] Support sfdx, it is a Rapid development tool for Salesforce SFDX Development. Metadata diff with server, retrieve standard sobject...
 -   [x] Support Wenyan 文言文編程語言.
 -   [x] Support hexo/mkdoc blog.
+-   [x] Support WSL Develope.
 -   [ ] TODO : jekyll .
 -   [ ] TODO : Docker development.
 -   [ ] TODO : a calculator.
@@ -41,13 +57,16 @@ run `xycode: download config`, and select config file.
 Please download config From [xycode-config](https://github.com/exiahuang/Xycode-config).
 And copy the configs to Home directory( `~/.xycode` or `%USERPROFILE%/.xycode`)
 
+> use `ctrl+shift+p` , search `xycode: open config directory`
+
 ## Custom Config
 
 ### create json file
 
 create json file in below
-Windows user: `%USERPROFILE%/.xycode`
-Linux/Mac user: `~/.xycode`
+
+-   Windows user: `%USERPROFILE%/.xycode`
+-   Linux/Mac user: `~/.xycode`
 
 ### json data construct
 
@@ -121,6 +140,14 @@ Linux/Mac user: `~/.xycode`
 -   \${TMPDIR} - Temp directory
 -   \${XYCODE_PATH} - XYCODE Extension path
 
+Windows Only Predefined variables:
+
+-   \${wslHOME} - WSL Home directory
+-   \${wslTMPDIR} - WSL Temp directory
+-   \${wslFile} - the current opened wsl file path
+-   \${wslWorkspaceFolder} - the wsl path of the folder opened
+-   \${wslFileDirname} - the current opened file's wsl dirname
+
 ### Predefined trigger
 
 -   Mkdirs - make directory
@@ -138,6 +165,14 @@ Linux/Mac user: `~/.xycode`
 -   openFolderDailog - Folder Path Selector
 -   singleFileDailog - File Path Selector
 -   multiFilesDailog - Mutliple File Paths Selector
+
+### support wslpath
+
+use `|wslpath` to change the windows path to wsl path
+example :
+
+-   get the wsl path of folder: `echo ${openFolderDailog:project_directory|wslpath}`
+-   get the wsl path of current file: `echo ${file|wslpath}`
 
 ## config example
 
@@ -368,6 +403,102 @@ use `Prettier` to pretty code .
 }
 ```
 
+### example 11: use wsl.
+
+```json
+{
+    "tasks": [
+        {
+            "label": "hello:echo:wsl-folder-path",
+            "description": "echo directory",
+            "options": {
+                "shell": "C:\\Windows\\System32\\bash.exe"
+            },
+            "command": "echo ${openFolderDailog:project_directory|wslpath}"
+        }
+    ],
+    "variables": {}
+}
+```
+
+### example 12: define console.
+
+```json
+{
+    "tasks": [
+        {
+            "label": "console: WSL",
+            "description": "open WSL",
+            "notShowProcess": true,
+            "command": "cd ${workspaceFolder} && start wsl"
+        },
+        {
+            "label": "console: cmd",
+            "description": "open cmd",
+            "notShowProcess": true,
+            "command": "start cmd"
+        },
+        {
+            "label": "console: Cmder",
+            "description": "open Cmder",
+            "notShowProcess": true,
+            "command": "Cmder.exe /single ${workspaceFolder}"
+        },
+        {
+            "label": "console: bash",
+            "description": "open bash",
+            "notShowProcess": true,
+            "command": "cd ${workspaceFolder} && start bash"
+        },
+        {
+            "label": "console: mintty.exe",
+            "description": "open mintty.exe",
+            "notShowProcess": true,
+            "command": "start /b mintty.exe /bin/bash --login"
+        }
+    ],
+    "variables": {}
+}
+```
+
+![xysfdx-open-wsl](https://raw.githubusercontent.com/exiahuang/xycode-doc/gh-pages/images/xysfdx-open-wsl.gif)
+
+### example 13: explorer and sublime
+
+open directory in `windows explorer` or `sublime`.
+
+```json
+{
+    "tasks": [
+        {
+            "label": "windows: explorer",
+            "description": "open explorer",
+            "notShowProcess": true,
+            "command": "start explorer ${workspaceFolder}"
+        },
+        {
+            "label": "windows: open home directory",
+            "description": "open home directory",
+            "notShowProcess": true,
+            "command": "start explorer ${HOME}"
+        },
+        {
+            "label": "sublime",
+            "description": "open sublime",
+            "notShowProcess": true,
+            "command": "\"C:\\Program Files\\Sublime Text 3\\sublime_text.exe\" \"${openFolderDailog:project_directory}\""
+        },
+        {
+            "label": "sublime:open this workspace",
+            "description": "open sublime",
+            "notShowProcess": true,
+            "command": "\"C:\\Program Files\\Sublime Text 3\\sublime_text.exe\" \"${workspaceFolder}\""
+        }
+    ],
+    "variables": {
+    }
+}
+
 ## Shortkey
 
 shortkey: `ctrl+shift+i`
@@ -395,3 +526,4 @@ Release Notes:
 Initial release of Xycode.
 
 **Enjoy it!**
+```

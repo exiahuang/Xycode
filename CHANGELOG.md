@@ -2,13 +2,12 @@
 
 All notable changes to the "xycode" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
-
 ## [0.0.6]
 
 -   `xycode.openconfig` command: open config directory.
 -   encoding config option.
--   add WSL path.
+-   support WSL develope. use `${input:variable_name|wslpath}` to format wslpath.
+-   add more properties `TaskType`.
 
 ## [0.0.5]
 
