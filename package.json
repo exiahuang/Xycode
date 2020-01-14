@@ -2,7 +2,7 @@
     "name": "xycode",
     "displayName": "xycode",
     "description": "a lightweight and fast command executor for vscode.",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "publisher": "ExiaHuang",
     "engines": {
         "vscode": "^1.40.0"
