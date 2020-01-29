@@ -2,7 +2,7 @@
     "name": "xycode",
     "displayName": "xycode",
     "description": "a lightweight and fast command executor for vscode. support docker, wsl, bash. config commad as a vscode plugin.",
-    "version": "0.0.6",
+    "version": "0.0.7",
     "publisher": "ExiaHuang",
     "engines": {
         "vscode": "^1.40.0"
