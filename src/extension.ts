@@ -5,8 +5,8 @@ import { Util } from './Util.js';
 import { Config, TaskUtil } from './Config';
 import { ConfigManager, ConfigDesc } from './ConfigManager';
 import { ExtConst } from './ExtConst';
-import { CommandRunner, CommandRunnerOptions } from './CommandRunner';
-
+import { CommandRunner } from './CommandRunner';
+import { CommandRunnerOptions } from './BaseCommandRunner';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -17,19 +17,21 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 
 	context.subscriptions.push(vscode.commands.registerCommand(`${ExtConst.extName}.open`, async () => {
-		const config = Config.data;
-		if(config.tasks.length === 0){
+		const configData = Config.data;
+		if(configData.tasks.length === 0){
 			vscode.commands.executeCommand(`${ExtConst.extName}.config`);
 			return;
 		}
-		const task = await vscode.window.showQuickPick(config.tasks.filter(task => TaskUtil.isTaskActive(task)));
+		const task = await vscode.window.showQuickPick(configData.tasks.filter(task => TaskUtil.isTaskActive(task)));
 		if (!task) { return false; }
-		const configVars = Util.getUserConfig(config.variables);
+		const configVars = Util.getUserConfig(task.pConfigType.variables);
 		const options :CommandRunnerOptions = {
 			maxBuffer: Util.maxBuffer,
 			encoding: task.encoding || Util.encoding,
-			isWslMode: Util.isWslMode,
-			shellPath: Util.shellPath
+			isWslMode: TaskUtil.isWslMode(task),
+			isDockerMode: TaskUtil.isDockerMode(task),
+			isBashMode: TaskUtil.isBashMode(task),
+			shellPath: TaskUtil.getShellPath(task)
 		};
 		if(task.notShowProcess){
 			new CommandRunner(options).run(task, configVars, Util.file, Util.workspaceFolder);
@@ -87,22 +89,20 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	vscode.workspace.onDidSaveTextDocument(async (doc) =>{
-		const config = Config.data;
+		const configData = Config.data;
 		const fileType = path.extname(doc.fileName);
-		const tasks = config.onSaveEvents?.filter(task => TaskUtil.isTaskActive(task, fileType));
-		const maxBuffer = Util.maxBuffer;
-		const encoding =  Util.encoding;
-		const isWslMode =  Util.isWslMode;
-		const shellPath =  Util.shellPath;
+		const tasks = configData.onSaveEvents?.filter(task => TaskUtil.isTaskActive(task, fileType));
 		await tasks?.forEach(async (task) => {
 			const options :CommandRunnerOptions = {
-				maxBuffer: maxBuffer,
-				encoding: task.encoding || encoding,
-				isWslMode: isWslMode,
-				shellPath: shellPath
+				maxBuffer: Util.maxBuffer,
+				encoding: task.encoding || Util.encoding,
+				isWslMode: TaskUtil.isWslMode(task),
+				isDockerMode: TaskUtil.isDockerMode(task),
+				isBashMode: TaskUtil.isBashMode(task),
+				shellPath: TaskUtil.getShellPath(task)
 			};
 			if(task.notShowProcess){
-				new CommandRunner(options).run(task, Util.getUserConfig(config.variables), doc.fileName, Util.workspaceFolder);
+				new CommandRunner(options).run(task, Util.getUserConfig(task.pConfigType.variables), doc.fileName, Util.workspaceFolder);
 			} else {
 				vscode.window.withProgress(
 					{
@@ -112,7 +112,7 @@ export function activate(context: vscode.ExtensionContext) {
 					async progress => {
 						  // Progress is shown while this function runs.
 						  // It can also return a promise which is then awaited
-						await new CommandRunner(options).run(task, Util.getUserConfig(config.variables), doc.fileName, Util.workspaceFolder);
+						await new CommandRunner(options).run(task, Util.getUserConfig(task.pConfigType.variables), doc.fileName, Util.workspaceFolder);
 					}
 				);
 			}

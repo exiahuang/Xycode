@@ -1,7 +1,7 @@
 {
     "name": "xycode",
     "displayName": "xycode",
-    "description": "a lightweight and fast command executor for vscode.",
+    "description": "a lightweight and fast command executor for vscode. support docker, wsl, bash. config commad as a vscode plugin.",
     "version": "0.0.6",
     "publisher": "ExiaHuang",
     "engines": {
@@ -76,21 +76,6 @@
                     "type": "number",
                     "default": 20000000,
                     "description": "The maxBuffer option specifies the largest number of bytes allowed on stdout or stderr."
-                },
-                "xycode.shellMode": {
-                    "type": "string",
-                    "default": "default",
-                    "description": "Default blank, use system shell.",
-                    "enum": [
-                        "default",
-                        "wsl",
-                        "bash"
-                    ]
-                },
-                "xycode.shellPath": {
-                    "type": "string",
-                    "default": "",
-                    "description": "shellPath. default blank. if you use wsl mode, please set it 'C:\\Windows\\System32\\bash.exe'"
                 },
                 "xycode.isDebug": {
                     "type": "boolean",

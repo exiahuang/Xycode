@@ -2,6 +2,13 @@
 
 All notable changes to the "xycode" extension will be documented in this file.
 
+## [0.0.7]
+
+-   support docker mode config
+-   support wsl mode config
+-   support bash mode config
+-   add docker express/flask/jekyll document
+
 ## [0.0.6]
 
 -   `xycode.openconfig` command: open config directory.

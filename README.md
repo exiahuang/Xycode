@@ -12,7 +12,7 @@ Project Details
 -   [exiahuang/Xycode](https://github.com/exiahuang/Xycode)
 -   [xycode-config](https://github.com/exiahuang/Xycode-config)
 
-Document Usage:
+Usage of xycode:
 
 -   [xycode English](https://exiahuang.github.io/xycode-doc/)
 -   [xycode 日本語](http://salesforcexytools.com/xycode-doc/index.ja/)
@@ -21,12 +21,20 @@ Document Usage:
 -   [C Program in xycode](http://salesforcexytools.com/xycode-doc/usage/c-program/)
 -   [Nodejs in xycode](http://salesforcexytools.com/xycode-doc/usage/nodejs/)
 -   [python in xycode](http://salesforcexytools.com/xycode-doc/usage/python/)
+-   [docker in xycode](http://salesforcexytools.com/xycode-doc/usage/docker/)
+    -   [xycode + docker + express](http://salesforcexytools.com/xycode-doc/usage/docker-express/)
+    -   [xycode + docker + flask](http://salesforcexytools.com/xycode-doc/usage/docker-flask/)
+    -   [xycode + docker + jekyll](http://salesforcexytools.com/xycode-doc/usage/docker-jekyll/)
 
 ## Features
 
 -   [x] Less than 100k.
 -   [x] Shared configuration (tasks/settings) of VScode.
 -   [x] Integrated with system command and work with vscode.
+-   [x] Support Docker development.
+    -   express
+    -   flask
+    -   jekyll
 -   [x] Support c lang.
 -   [x] Support vbs.
 -   [x] Support dotnet core.
@@ -42,8 +50,6 @@ Document Usage:
 -   [x] Support Wenyan 文言文編程語言.
 -   [x] Support hexo/mkdoc blog.
 -   [x] Support WSL Develope.
--   [ ] TODO : jekyll .
--   [ ] TODO : Docker development.
 -   [ ] TODO : a calculator.
 
 ## Download config
@@ -495,9 +501,39 @@ open directory in `windows explorer` or `sublime`.
             "command": "\"C:\\Program Files\\Sublime Text 3\\sublime_text.exe\" \"${workspaceFolder}\""
         }
     ],
-    "variables": {
+    "variables": {}
+}
+```
+
+### example 14: use docker
+
+add `docker` to your json file in `~/.xycode`,
+then each task in this json config file will run in docker container.
+
+```json
+{
+    "tasks": [
+        {
+            "description": "use docker run command!",
+            "label": "docker:run js",
+            "command": "node ${file}",
+            "dockerOptions": {
+                "openTTY": false
+            }
+        }
+    ],
+    "variables": {},
+    "docker": {
+        "dockerContainer": "${lowercaseWorkspaceName}_sfdx_1"
     }
 }
+```
+
+more example about docker:
+
+-   [xycode + docker + express](http://salesforcexytools.com/xycode-doc/usage/docker-express/)
+-   [xycode + docker + flask](http://salesforcexytools.com/xycode-doc/usage/docker-flask/)
+-   [xycode + docker + jekyll](http://salesforcexytools.com/xycode-doc/usage/docker-jekyll/)
 
 ## Shortkey
 
@@ -526,4 +562,3 @@ Release Notes:
 Initial release of Xycode.
 
 **Enjoy it!**
-```

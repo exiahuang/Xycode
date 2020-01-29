@@ -34,7 +34,7 @@ export class XycodeUI {
         const writeEmitter = new vscode.EventEmitter<string>();
         const pty = {
             onDidWrite: writeEmitter.event,
-            open: () => writeEmitter.fire('Type and press enter to echo the text\r\n\r\n'),
+            open: () => writeEmitter.fire('Type and press enter to echo the text\n\n'),
             close: () => {},
             handleInput: (data: string) => {
             }
@@ -44,8 +44,8 @@ export class XycodeUI {
         return writeEmitter;
     }
 
-    public getTerminal(name?: string, shellPath?: string, shellArgs?: string[] | string): vscode.Terminal{
-        const terminal = (<any>vscode.window).createTerminal({ name: name, shellPath: shellPath, shellArgs:shellArgs });
+    public getTerminal(opts: {name?: string, shellPath?: string | undefined, shellArgs?: string[] | string}): vscode.Terminal{
+        const terminal = (<any>vscode.window).createTerminal(opts);
         terminal.show();
         return terminal;
     }
@@ -60,14 +60,36 @@ export class XycodeUI {
         this.xycodeChannel.appendLine(msg.toString());
     }
 
-    public debug(msg: any, isJson?: boolean) {
-        if(msg && Util.isDebug){
-            if(isJson){
-                this.channelShow("[debug] " + JSON.stringify(msg, null, 2));
-            } else{
-                this.channelShow("[debug] " + msg);
-            }
+    public log(msg: any, opts:{ showTimeStamp:boolean, tag: string, isJson : boolean }) {
+        if(!msg){
+            return;
         }
+        if(opts.showTimeStamp) {
+            this.xycodeChannel.append(`[${new Date().toLocaleString()}] ` + (opts.tag ? `[${opts.tag}] `: ""));
+        }
+        if(opts.isJson){
+            this.xycodeChannel.appendLine(JSON.stringify(msg, null, 2));
+        } else {
+            this.xycodeChannel.appendLine(msg.toString());
+        }
+    }
+    
+    public debug(msg: any, isJson: boolean = false) {
+        if(msg && Util.isDebug){
+            this.log(msg, {showTimeStamp:true, tag: "debug", isJson: isJson});
+        }
+    }
+
+    public info(msg: any, isJson: boolean = false) {
+        this.log(msg, {showTimeStamp:true, tag: "info", isJson: isJson});
+    }
+
+    public fatal(msg: any, isJson: boolean = false) {
+        this.log(msg, {showTimeStamp:true, tag: "fatal", isJson: isJson});
+    }
+
+    public warn(msg: any, isJson: boolean = false) {
+        this.log(msg, {showTimeStamp:true, tag: "warn", isJson: isJson});
     }
 
     public openChannel() {
@@ -127,7 +149,7 @@ export class XycodeUI {
             {
 			value: configVar && configVar.hasOwnProperty("value") ? configVar["value"].toString() : "",
 			placeHolder: configVar && configVar.hasOwnProperty("label") ? configVar["label"].toString() : `Please input ${msg} `
-		    });
+            });
 		return result;
     }
 
