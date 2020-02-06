@@ -5,7 +5,7 @@ import { getTriggerHandler } from './TriggerHandler';
 import { Util } from './Util.js';
 import { TaskType, TaskUtil } from './Config';
 import { ExtConst } from './ExtConst';
-import { BaseCommandRunner, CommandRunnerOptions } from './BaseCommandRunner';
+import { BaseCommandRunner, CommandRunnerOptions, SimpleCommandRunner } from './BaseCommandRunner';
 import { SimpleQuickPickItem } from './SimpleQuickPickItem';
 
 export class CommandRunner extends BaseCommandRunner {
@@ -115,13 +115,15 @@ export class CommandRunner extends BaseCommandRunner {
 
 export class CommandBuilder{
 	public customVars: { [index: string]: string; } = {};
-	private configVars: any;
+	private configVars: { [x: string]: any; } = {};
 	private fileAttr: any;
+	private simpleCommandRunner: SimpleCommandRunner;
 
 	constructor(private options : CommandRunnerOptions){
+		this.simpleCommandRunner = new SimpleCommandRunner(options);
 	}
 
-	public async parser(task: TaskType, configVars: any, file: string, workspaceFolder: string) : Promise<string> {
+	public async parser(task: TaskType, configVars: { [x: string]: any; }, file: string, workspaceFolder: string) : Promise<string> {
 		XycodeUI.instance.debug("start to parser command");
 		const xycodeui = XycodeUI.instance;
 		const isDockerMode = this.options.isDockerMode;
@@ -144,7 +146,19 @@ export class CommandBuilder{
 				output = output.replace(matches[0], this.customVars[varkey]);
 				continue;
 			}
-			const configVar = this.configVars[varkey];
+			let configVar = this.configVars[varkey];
+			// format variables
+			if(typeof configVar === 'object' && configVar.hasOwnProperty("scripttype") && configVar.hasOwnProperty("script") 
+				&& configVar["scripttype"] === "shell" && configVar["script"]){
+				let { stdout, stderr } = await this.simpleCommandRunner.exec(configVar["script"]);
+				if(configVar["datatype"] === "json") {
+					configVar["value"] = JSON.parse(stdout);
+				} else if(configVar["datatype"] === "array") {
+					configVar["value"] = stdout.split(configVar["separator"] || " ");
+				} else {
+					configVar["value"] = stdout;
+				}
+			}
 			let customInput;
 			let customInputWsl;
 			let customInputDocker;
@@ -333,6 +347,7 @@ export class CommandBuilder{
 		}
 		return fileAttr;
 	}
+
 }
 
 

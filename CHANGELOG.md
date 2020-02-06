@@ -2,6 +2,10 @@
 
 All notable changes to the "xycode" extension will be documented in this file.
 
+## [0.0.8]
+
+-   support dynamic variables
+
 ## [0.0.7]
 
 -   support docker mode config

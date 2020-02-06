@@ -535,6 +535,34 @@ more example about docker:
 -   [xycode + docker + flask](http://salesforcexytools.com/xycode-doc/usage/docker-flask/)
 -   [xycode + docker + jekyll](http://salesforcexytools.com/xycode-doc/usage/docker-jekyll/)
 
+### example 15: use dynamic variables
+
+define a dynamic variable, the value of var is the `script` result.
+
+```json
+{
+    "tasks": [
+        {
+            "label": "docker:base:attach docker shell",
+            "termial": {
+                "name": "docker"
+            },
+            "description": "open default termial",
+            "command": "docker exec -it \"${select:docker_container_names}\" /bin/sh -c \"[ -e /bin/bash ] && /bin/bash || /bin/sh\""
+        }
+    ],
+    "variables": {
+        "docker_container_names": {
+            "label": "docker container name",
+            "scripttype": "shell",
+            "script": "docker container ls --format=\"{{.Names}}\" --all",
+            "datatype": "array",
+            "separator": "\n"
+        }
+    }
+}
+```
+
 ## Shortkey
 
 shortkey: `ctrl+shift+i`
